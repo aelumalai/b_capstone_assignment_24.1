@@ -1,12 +1,12 @@
-Capstone Project: Predicting Hospital Readmission within 30 Days
+#Capstone Project: Predicting Hospital Readmission within 30 Days
 
-Executive Summary
+##Executive Summary
 This project addresses the critical issue of 30-day hospital readmissions for diabetic patients by developing a predictive machine learning model. By leveraging a comprehensive historical dataset, the model aims to accurately identify patients at high risk of readmission upon discharge. This will enable healthcare providers to implement targeted interventions, improve patient outcomes, reduce healthcare costs associated with preventable readmissions, and optimize resource allocation. The analysis involved extensive Exploratory Data Analysis (EDA), rigorous data cleaning and feature engineering, and the application of various machine learning models (Logistic Regression, Random Forest, XGBoost) with a focus on handling class imbalance using SMOTE and feature selection using LASSO regularization. The Logistic Regression model with LASSO regularization and SMOTE on full features demonstrated the best performance in terms of AUC-ROC, F1-Score, and Recall for the minority class.
 
-Rationale: Why This Question Is Important
+##Rationale: Why This Question Is Important
 Hospital readmissions, especially within 30 days of discharge for diabetic patients, represent a significant challenge for healthcare systems. These events cause considerable stress and discomfort for patients, lead to suboptimal health outcomes, and incur substantial financial penalties for hospitals. Identifying at-risk patients traditionally relies on subjective assessments, often leading to inefficient resource allocation and missed opportunities for timely intervention. This research is crucial because it:
 
-Enhances Patient Outcomes: By predicting readmissions, interventions can be deployed proactively, leading to better patient care and recovery.
+##Enhances Patient Outcomes: By predicting readmissions, interventions can be deployed proactively, leading to better patient care and recovery.
 Reduces Healthcare Costs: Preventing readmissions mitigates financial penalties for hospitals and lowers overall healthcare expenditures.
 Improves Efficiency and Quality of Care: The model helps in identifying patterns that human analysis might overlook, allowing for more precise resource allocation and improved care pathways.
 Research Question
