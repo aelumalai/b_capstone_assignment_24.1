@@ -12,86 +12,88 @@ Improves Efficiency and Quality of Care: The model helps in identifying patterns
 Research Question
 Predicting Hospital Readmission within 30 Days: Diabetic patient readmissions within 30 days of discharge represent a critical and costly issue for healthcare systems. These preventable readmissions significantly strain hospital resources, lead to substantial financial penalties, and most importantly, compromise patient well-being and recovery. Identifying patients at highest risk of readmission relies heavily on subjective assessments, leading to inefficient resource allocation and missed opportunities for timely intervention. This project leverages advanced machine learning techniques on a rich historical dataset of diabetic patient hospitalizations to develop a predictive model. This model will accurately identify patients at elevated risk of 30-day readmission upon discharge.
 
-Data Sources
-Dataset Name: Diabetes 130-US hospitals for years 1999-2008 Data Set
 
-Source: UCI Machine Learning Repository
-
-Link: https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008
-
+Project: Predicting Hospital Readmission within 30 Days for Diabetic Patients
+Overview
+This project aims to develop a predictive model that identifies diabetic patients at high risk of hospital readmission within 30 days of discharge. The ultimate goal is to enable healthcare providers to implement targeted interventions, improve patient outcomes, reduce healthcare costs associated with preventable readmissions, and optimize resource allocation.
+Data Source
+The dataset used for this project is the "Diabetes 130-US hospitals for years 1999-2008 Data Set" from the UCI Machine Learning Repository.
+•	Link: UCI Machine Learning Repository
 Methodology
-The project followed a comprehensive methodology encompassing data understanding, preprocessing, feature engineering, model development, and evaluation:
-
-1. Exploratory Data Analysis (EDA) and Feature Engineering
-Data Loading and Initial Inspection: The diabetic_data.csv dataset was loaded, and initial checks (df.head(), df.info()) were performed to understand its structure and data types.
-Handling Missing Values: Missing values represented by '?' in columns like race, payer_code, diag_1, diag_2, and diag_3 were imputed with their respective modes. NaN values in max_glu_serum and A1Cresult were filled with 'None'. Columns weight and medical_specialty were dropped due to a high percentage of missing values.
-Data Consistency Checks: Duplicate rows were checked for and confirmed to be absent.
-Categorical Feature Exploration: Distributions of readmitted, gender, and age were analyzed and visualized, revealing class imbalances and patterns.
-Feature Engineering Steps:
-Rows with 'Unknown/Invalid' gender were removed.
-gender was one-hot encoded (gender_Male).
-age ranges were ordinal encoded to numerical midpoints.
-The target variable readmitted was transformed into a binary readmitted_binary (1 for readmission within 30 days, 0 otherwise).
-Numerical outliers were capped using the IQR method.
-Numerical Feature Analysis: A correlation heatmap was generated for numerical features to visualize relationships.
-Preprocessing Setup: A ColumnTransformer was configured to apply StandardScaler to numerical features and OneHotEncoder to selected categorical features, with remainder='drop' to exclude unselected features.
-Train/Test Split: The preprocessed feature set (X_transformed) and the binary target variable (y) were split into training and testing sets (80/20 split) using stratify=y to maintain class proportions.
-
-2. Machine Learning Models
-Given the imbalanced nature of the target variable, various models were trained and evaluated, focusing on techniques to address class imbalance:
-1.	Baseline Model: A simple model predicting the majority class (0: Not readmitted) was established for comparison.
-2.	Logistic Regression (Initial): A basic Logistic Regression model was trained and evaluated.
-3.	Logistic Regression with class_weight='balanced': To address class imbalance, the Logistic Regression model was re-trained with class_weight='balanced' to give more importance to the minority class.
-4.	Logistic Regression with SMOTE: The training data was resampled using SMOTE (Synthetic Minority Over-sampling Technique) to balance the class distribution, and a Logistic Regression model was trained on this balanced data.
-5.	Random Forest Classifier (Initial): A Random Forest model was trained with class_weight='balanced'.
-6.	Random Forest Classifier with SMOTE: The Random Forest model was re-trained on SMOTE-resampled data.
-7.	XGBoost Classifier with SMOTE: An XGBoost model was trained on SMOTE-resampled data.
-8.	LASSO Regularization (Logistic Regression with L1 penalty): A Logistic Regression model with L1 regularization (penalty='l1') was used for inherent feature selection, trained on SMOTE-resampled data.
-9.	Models with Top 10 LASSO Features: Logistic Regression, Random Forest, and XGBoost were re-trained using only the top 10 features identified by LASSO regularization.
-
-3. Evaluation Metrics
-Beyond accuracy, the models were primarily evaluated using metrics crucial for imbalanced classification problems:
-Accuracy: Overall correctness of the model.
-Precision (Class 1): Proportion of positive predictions that were actually correct.
-Recall (Class 1) / Sensitivity: Proportion of actual positive cases that were correctly identified. This was a key focus given the business objective.
-F1-Score (Class 1): Harmonic mean of precision and recall, balancing both metrics.
-AUC-ROC (Area Under the Receiver Operating Characteristic Curve): A threshold-independent measure of the model's ability to distinguish between positive and negative classes.
-Confusion Matrix: Visual representation of true positives, true negatives, false positives, and false negatives.
-Results
+1. Data Loading and Initial Inspection
+•	The diabetic_data.csv file was downloaded, extracted, and loaded into a pandas DataFrame.
+•	Initial inspection revealed 50 columns and 101,766 entries.
+2. Data Cleaning and Preprocessing
+•	Missing Values: Missing values, represented by '?', were handled:
+o	encounter_id, patient_nbr, payer_code, weight, medical_specialty columns were dropped due to a high number of missing values or being identifiers.
+o	Missing '?' values in diag_1, diag_2, diag_3, race were imputed with their respective modes.
+o	NaN values in max_glu_serum and A1Cresult were filled with 'None'.
+•	Duplicate Rows: Checked for and confirmed no duplicate rows were present.
+•	Gender Handling: Rows with 'Unknown/Invalid' gender were removed, and the gender column was one-hot encoded.
+•	Age Encoding: The age categorical ranges were ordinally encoded to their midpoint values.
+•	Outlier Capping: Outliers in numerical columns were capped using the Interquartile Range (IQR) method to reduce their influence on model training.
+•	Target Variable Transformation: The readmitted column was transformed into a binary target readmitted_binary:
+o	1 if readmitted within 30 days (<30)
+o	0 otherwise (NO, >30)
+3. Exploratory Data Analysis (EDA)
+•	Distribution of Target Variable: Analyzed the highly imbalanced readmitted_binary variable.
+•	Categorical Feature Distributions: Visualized distributions of gender, age, and other categorical features.
+•	Numerical Feature Distributions: Plotted histograms for numerical features.
+•	Correlation Analysis: Generated a correlation heatmap for numerical features to understand relationships and identify potential multicollinearity.
+•	Outlier Detection & Visualization: Used IQR method to identify outliers and visualized them using boxplots before and after capping.
+4. Feature Engineering
+•	Categorical features (race, payer_code, diag_1, diag_2, diag_3, max_glu_serum, A1Cresult, metformin) were one-hot encoded.
+•	Numerical features were scaled using StandardScaler.
+5. Train/Test Split
+•	The data was split into training and testing sets (80% train, 20% test) with stratify=y to maintain the class distribution of the target variable.
+6. Class Imbalance Handling
+•	Due to the severe class imbalance, SMOTE (Synthetic Minority Over-sampling Technique) was applied to the training data (X_train_res, y_train_res) to balance the classes and improve model performance on the minority class.
+7. Modeling Approaches
+Several machine learning models were trained and evaluated:
+•	Logistic Regression (Baseline, Balanced Class Weights): A simple linear model, initially trained with class_weight='balanced' and then with SMOTE-resampled data.
+•	Random Forest Classifier: An ensemble tree-based model, also trained with class_weight='balanced' and then with SMOTE-resampled data.
+•	XGBoost Classifier: A powerful gradient boosting model, trained with SMOTE-resampled data.
+•	LASSO Regularization for Feature Selection: Logistic Regression with L1 regularization was used to identify key features and was trained on SMOTE-resampled data.
+•	Models with Top 10 Features: The above models were re-trained using only the top 10 features identified by LASSO regularization.
+8. Evaluation Metrics
+Given the imbalanced nature of the dataset, the following metrics were prioritized:
+•	Accuracy: Overall correctness of predictions.
+•	Recall (Sensitivity): Proportion of actual positive cases (readmissions) correctly identified. Critical in healthcare to avoid missing high-risk patients.
+•	Precision: Proportion of positive predictions that were actually correct. Important for minimizing false alarms.
+•	F1-Score: Harmonic mean of precision and recall, balancing both metrics.
+•	AUC-ROC: Area Under the Receiver Operating Characteristic curve, a threshold-independent measure of overall model performance in distinguishing between classes.
+Key Findings
 Model Performance Comparison:
 Model	Accuracy	Precision (Class 1)	Recall (Class 1)	F1-Score (Class 1)	AUC-ROC
 Logistic Regression (SMOTE, Full Features)	0.6253	0.1601	0.5491	0.2483	0.6247
 Random Forest (SMOTE, Full Features)	0.8877	0.0383	0.0101	0.0197	0.6295
-XGBoost (SMOTE, Full Features)	0.8884	0	0	0	0.6371
-Logistic Regression (LASSO + SMOTE, Full Features)	0.6345	0.1652	0.562	0.2559	0.6358
+XGBoost (SMOTE, Full Features)	0.8884	0.0000	0.0000	0.0000	0.6371
+Logistic Regression (LASSO + SMOTE, Full Features)	0.6345	0.1652	0.5620	0.2559	0.6358
 Logistic Regression (SMOTE, Top 10 Features)	0.8848	0.2687	0.0189	0.0354	0.5074
-Random Forest (SMOTE, Top 10 Features)	0.8883	0.4717	0.011	0.0215	0.5043
-XGBoost (SMOTE, Top 10 Features)	0.8883	0.4717	0.011	0.0215	0.5052
+Random Forest (SMOTE, Top 10 Features)	0.8883	0.4717	0.0110	0.0215	0.5043
+XGBoost (SMOTE, Top 10 Features)	0.8883	0.4717	0.0110	0.0215	0.5052
 Logistic Regression (LASSO + SMOTE, Top 10 Features)	0.8848	0.2687	0.0189	0.0354	0.5074
-
 Key Observations:
-Impact of SMOTE and Class Weights: Models trained with SMOTE (and Logistic Regression with class_weight='balanced') generally achieved higher recall for the minority class (Class 1: readmitted) compared to models without these techniques, even if overall accuracy decreased. This trade-off is desirable in healthcare, where identifying at-risk patients (high recall) is critical.
-Best Performing Model (Full Features): The Logistic Regression model with LASSO regularization and SMOTE on full features (Logistic Regression (LASSO + SMOTE, Full Features)) stood out with the highest AUC-ROC (0.6358), best F1-Score for Class 1 (0.2559), and strong Recall (0.5620). This indicates a good balance between identifying actual readmissions and minimizing false positives.
-Effectiveness of Feature Selection (LASSO): While LASSO successfully reduced the number of features, re-training models with only the top 10 features significantly reduced their performance (especially recall and AUC-ROC) compared to models using the full feature set. This suggests that a broader set of features (or a more sophisticated feature selection approach) is necessary.
-Ensemble Models: Random Forest and XGBoost models, even with SMOTE, did not show substantial improvement in minority class recall or F1-score over the tuned Logistic Regression or LASSO models when using the full feature set. Their performance also dropped significantly when restricted to the top 10 features.
+•	Models trained with SMOTE (and Logistic Regression with class_weight='balanced') significantly improved recall for the minority class (readmission) compared to models without these techniques.
+•	The Logistic Regression model with LASSO regularization and SMOTE on full features (Logistic Regression (LASSO + SMOTE, Full Features)) emerged as the best performer with the highest AUC-ROC (0.6358) and F1-Score (0.2559) for Class 1, demonstrating a good balance between identifying actual readmissions and minimizing false positives.
+•	Retraining models with only the top 10 features identified by LASSO regularization reduced their performance significantly, indicating that a broader set of features is crucial for capturing the complexity of readmission prediction.
+•	Ensemble models (Random Forest, XGBoost) did not consistently outperform the tuned Logistic Regression or LASSO models in terms of minority class recall or F1-score.
 Summary of Top 10 Features Determining Hospital Readmissions (from LASSO):
-These features, identified by LASSO regularization, showed the strongest influence on readmission probability:
-
-cat__diag_1_V58: Coefficient = 1.9081
-cat__diag_2_507: Coefficient = -1.0920
-cat__diag_1_239: Coefficient = 0.9481
-cat__diag_1_566: Coefficient = -0.9262
-cat__diag_1_443: Coefficient = 0.8876
-cat__diag_1_281: Coefficient = 0.8698
-cat__diag_2_342: Coefficient = 0.8446
-cat__diag_1_250.41: Coefficient = 0.8438
-cat__diag_1_218: Coefficient = -0.8274
-cat__diag_1_386: Coefficient = -0.8244
+1.	cat__diag_1_V58: Coefficient = 1.9081
+2.	cat__diag_2_507: Coefficient = -1.0920
+3.	cat__diag_1_239: Coefficient = 0.9481
+4.	cat__diag_1_566: Coefficient = -0.9262
+5.	cat__diag_1_443: Coefficient = 0.8876
+6.	cat__diag_1_281: Coefficient = 0.8698
+7.	cat__diag_2_342: Coefficient = 0.8446
+8.	cat__diag_1_250.41: Coefficient = 0.8438
+9.	cat__diag_1_218: Coefficient = -0.8274
+10.	cat__diag_1_386: Coefficient = -0.8244
 Insights from Top Features:
-
-Diagnosis Codes Dominate: The top features are primarily categorical diagnosis codes (diag_1, diag_2), suggesting that primary and secondary diagnoses upon admission are crucial indicators for readmission risk.
-Positive vs. Negative Coefficients: Features with positive coefficients are associated with an increased likelihood of readmission, while those with negative coefficients indicate a decreased likelihood. This provides actionable insights for clinical intervention and risk stratification.
-Project Organization
+•	Diagnosis codes (diag_1, diag_2) are the most influential features, with specific codes significantly increasing or decreasing the likelihood of readmission.
+•	Positive coefficients indicate an increased likelihood of readmission, while negative coefficients suggest a decreased likelihood.
+Next Steps
+•	Conduct more extensive hyperparameter tuning for the best-performing models to further optimize their performance.
+•	Explore alternative feature engineering techniques to potentially uncover more predictive patterns.
+•	Investigate advanced ensemble methods with careful attention to class imbalance handling strategies.
 Link to Jupyter Notebook: https://github.com/aelumalai/b_capstone_assignment_24.1/blob/main/capstone_project_assignment_24.1.ipynb
-
-
